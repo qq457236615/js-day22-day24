@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>String</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<div>
+		<label>String A:
+			<input id="radio-a" type="radio" checked="true" name="str-obj" value="a">
+		</label>
+		<textarea id="str-a"></textarea>
+		<label>String B:
+			<input id="radio-b" type="radio" name="str-obj" value="b">
+		</label>
+		<textarea id="str-b"></textarea>        
+		<label>Num A：<input id="num-a" type="number" value="0"></label>
+		<label>Num B：<input id="num-b" type="number" value="1"></label>
+	</div>
+	<div>
+		<button>获取当前选中输入的内容长度</button>
+		<button>当前选中输入中的第3个字符</button>
+		<button>把两个输入框的文字连接在一起输出（concat）</button>
+		<button>输入B中的内容，在输入A的内容中第一次出现的位置（indexOf）</button>
+		<button>输入A中的内容，在输入B的内容中最后一次出现的位置（lastIndexOf）</button>
+		<button>使用slice获取选中输入框内容的部分内容，参数为num-a及num-b</button>
+		<button>当前选中输入框的行数</button>
+		<button>使用substr获取选中输入框内容的子字符串，参数为num-a及num-b</button>
+		<button>把所选输入框中的内容全部转为大写</button>
+		<button>把所选输入框中的内容全部转为小写</button>
+		<button>把所选输入框中内容的半角空格全部去除</button>
+		<button>把所选输入框中内容的a全部替换成另外一个输入框中的内容</button>
+	</div>
+	<p id="result"></p>
+	<script>
+	(function(){
+		var currentStr= document.querySelector("input[type='radio']:checked");
+		var result = document.getElementById("result");
+		var parentOfBtns = document.querySelector("div:last-of-type");
+		parentOfBtns.addEventListener("click", function(e){
+			e = e || window.event;
+			var target = e.target || e.srcElement;
+			var nodeName = target.nodeName;
+			while (target !== parentOfBtns) {
+				if (nodeName.toLowerCase() === "button") {
+					var index = [].indexOf.call(parentOfBtns.getElementsByTagName("button"), target);
+					switch (index) {
+						case 0: {
+							handleOneInput("length");
+							break;
+						}
+						case 1: {
+							handleOneInput(2);
+							break;
+						}
+						case 2: {							
+							var strA = document.getElementById("str-a").value;
+							var strB = document.getElementById("str-b").value;
+							handleTwoInput(strA, strB ,"concat");
+							break;
+						}
+						case 3: {
+							var strA = document.getElementById("str-a").value;
+							var strB = document.getElementById("str-b").value;
+							handleTwoInput(strA, strB ,"indexOf");
+							break;
+						}
+						case 4: {
+							var strA = document.getElementById("str-a").value;
+							var strB = document.getElementById("str-b").value;
+							handleTwoInput(strB, strA ,"lastIndexOf");
+							break;
+						}
+						case 5: {
+							var numA = document.getElementById("num-a").value;
+							var numB = document.getElementById("num-b").value;
+							handleOneInput("slice", numA, numB);
+							break;
+						}
+						case 6: {
+							getLinesNum();
+							break;
+						}
+						case 7: {
+							var numA = document.getElementById("num-a").value;
+							var numB = document.getElementById("num-b").value;
+							handleOneInput("substr", numA, numB);
+							break;
+						}
+						case 8: {
+							handleOneInput("toUpperCase");
+							break;
+						}
+						case 9: {
+							handleOneInput("toLowerCase");
+							break;
+						}
+						case 10: {
+							handleOneInput("replace", /\s/g);
+							break;
+						}
+						case 11: {
+							var currentRadio = document.querySelector("input[type='radio']:checked");
+							if (currentRadio) {
+								var currentStr = document.getElementById("str-" + currentRadio.value);
+								if (currentStr.getAttribute("id") === "str-a") {
+									var replaceStr = document.getElementById("str-b").value;
+									res = currentStr.value.replace(/a/g, replaceStr);
+								}
+								else if (currentStr.getAttribute("id") === "str-b") {
+									var replaceStr = document.getElementById("str-a").value;
+									res = currentStr.value.replace(/a/g, replaceStr);
+								}
+								result.innerHTML = res;
+							}
+							break;
+						}
+						default:
+							break;
+					}
+					break;
+				}
+				target = target.parentNode;
+			}
+		});
+		
+		function handleOneInput(str, param){
+			var currentRadio = document.querySelector("input[type='radio']:checked");
+			var numA = document.getElementById("num-a").value;
+			var numB = document.getElementById("num-b").value;
+			var res = "";
+			if (currentRadio) {
+				var currentStr = document.getElementById("str-" + currentRadio.value).value;
+				if (typeof str === "number") {
+					res = currentStr[str];
+				}
+				else {
+					switch (str) {
+						case "length": {
+							res = currentStr.length
+							break;
+						}
+						case "slice": {
+							res = currentStr.slice(numA, numB);
+							break;
+						}
+						case "toUpperCase": {
+							res = currentStr.toUpperCase();
+							break;
+						}
+						case "substr": {
+							res = currentStr.substr(numA, numB);
+							break;
+						}
+						case "toLowerCase": {
+							res = currentStr.toLowerCase();
+							break;
+						}
+						case "replace": {
+							res = currentStr.replace(param,"");
+							break;
+						}
+						default:
+							break;
+					}
+				}
+				result.innerHTML = res;
+			}
+		}
+		
+		function handleTwoInput(a, b, str){
+			result.innerHTML = a[str](b);
+		}
+		
+		function getLinesNum(){
+			var currentRadio = document.querySelector("input[type='radio']:checked");
+			if (currentRadio) {
+				var currentStr = document.getElementById("str-" + currentRadio.value).value;
+				var linesNum = currentStr.split(/\n/).length;
+				result.innerHTML = "共有" + linesNum + "行";
+			}
+		}
+	})();
+	</script>
+</body>
+</html>

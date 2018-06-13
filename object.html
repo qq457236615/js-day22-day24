@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Object</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+	<div>
+		<label>name :
+			<input type="text" name="name-text" id="name" value="" />
+		</label>
+		<label>id :
+			<input type="text" name="id-text" id="id" value="" />
+		</label>
+		<p id="result-id"></p>
+	</div>
+    <script>
+	var tree = {
+		"id": 0,
+		"name": "root",
+		"left": {
+			"id": 1,
+			"name": "Simon",
+			"left": {
+				"id": 3,
+				"name": "Carl",
+				"left": {
+					"id": 7,
+					"name": "Lee",
+					"left": {
+						"id": 11,
+						"name": "Fate"
+					}
+				},
+				"right": {
+					"id": 8,
+					"name": "Annie",
+					"left": {
+						"id": 12,
+						"name": "Saber"
+					}
+				}
+			},
+			"right": {
+				"id": 4,
+				"name": "Tony",
+				"left": {
+					"id": 9,
+					"name": "Candy"
+				}
+			}
+		},
+		"right": {
+			"id": 2,
+			"name": "right",
+			"left": {
+				"id": 5,
+				"name": "Carl",
+			},
+			"right": {
+				"id": 6,
+				"name": "Carl",
+				"right": {
+					"id": 10,
+					"name": "Kai"
+				}
+			}
+		}
+	}
+
+	var nameText = document.getElementById("name");
+	var idText = document.getElementById("id");
+	var resultID = document.getElementById("result-id");
+	nameText.oninput = function(e){
+		var name = document.getElementById("name").value;
+		findIdByName(name);
+	};
+	idText.oninput = function(e){
+		var id = document.getElementById("id").value;
+		findNameById(id);
+	};
+	findIdByName();
+        // 假设id和name均不会重复，根据输入name找到对应的id
+		function findIdByName(name) {
+			var obj = tree;
+			var isName = false;
+			serchID();
+			function serchID(){	
+				if (obj.name == name) {
+					resultID.innerHTML = obj.id;
+					return;
+				}
+				var parentObj = obj;
+				if ("left" in obj) {
+					obj = obj.left;
+					serchID(obj);
+				}
+				obj = parentObj;
+				if ("right" in obj) {
+					obj = obj.right;
+					serchID(obj);
+				}
+				return;
+			}
+		}
+
+	
+	// 假设id和name均不会重复，根据输入id找到对应的name
+	function findNameById(id) {
+        var obj = tree;
+        var isID = false;
+        serchName();
+        function serchName(){			
+        	if (obj.id == id) {
+        		resultID.innerHTML = obj.name;
+        		return;
+        	}
+			var parentObj = obj;
+			if ("left" in obj) {
+				obj = obj.left;
+				serchName(obj);
+			}
+			obj = parentObj;
+			if ("right" in obj) {
+				obj = obj.right;
+				serchName(obj);
+			}
+        	return;
+        }
+	}
+    /*                             root
+	 			     Simon                    right
+		      Carl          Tony       Carl          Carl
+		Lee       Annie   Candy                          Kai
+	Fate       Saber
+	*/
+	// 把这个对象中所有的名字以“前序遍历”的方式全部输出到console中
+	// 前序遍历---->>>>根左右
+	var obj = tree;
+	// getListWithDLR();
+	
+	function getListWithDLR() {
+	    console.log(obj.name);
+		var parentNode = obj;
+		if ("left" in obj) {
+			obj = obj.left;
+			getListWithDLR();
+		}
+		obj = parentNode;
+		if ("right" in obj) {
+			obj = obj.right;
+			getListWithDLR();
+		}
+		return;
+	}
+
+	// 把这个对象中所有的名字以“中序遍历”的方式全部输出到console中
+	// 中序遍历---->>>>左根右
+	var obj2 = tree;
+	// getListWithLDR();
+	function getListWithLDR() {
+        var parentNode = obj2;
+        if ("left" in obj2) {
+        	obj2 = obj2.left;
+        	getListWithLDR();
+        }
+        obj2 = parentNode;
+		console.log(obj2.name);
+        if ("right" in obj2) {
+        	obj2 = obj2.right;
+        	getListWithLDR();
+        }
+        return;
+	}
+
+	// 把这个对象中所有的名字以“后序遍历”的方式全部输出到console中
+	// 后序遍历---->>>>左右根
+	var obj3 = tree;
+	getListWithLRD();
+	function getListWithLRD() {
+        var parentNode = obj3;
+        if ("left" in obj3) {
+        	obj3 = obj3.left;
+			getListWithLRD();
+        }
+        obj3 = parentNode;
+        if ("right" in obj3) {
+			obj3 = obj3.right;
+			getListWithLRD();
+        }
+        return;
+	}
+    </script>
+</body>
+
+</html>
